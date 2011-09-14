@@ -159,7 +159,6 @@ public class WebpageRequestHandler implements RequestHandler {
 
                                 if ((types != null) && (types.length > 0)) {
                                     type = types[0].getClass();
-
                                 }
                             } else if (fieldType.isArray()) {
                                 instance = Array.newInstance(fieldType.getComponentType(), parameterValues.length);
@@ -179,12 +178,7 @@ public class WebpageRequestHandler implements RequestHandler {
                             }
 
                             field.setAccessible(true);
-
-                            if (List.class.equals(fieldType) || Set.class.equals(fieldType)) {
-                                field.set(pageInstance, instance);
-                            } else if (fieldType.isArray()) {
-                                field.set(pageInstance, instance);
-                            }
+                            field.set(pageInstance, instance);
                         }
                     } else {
                         final String parameterValue = request.getParameter(parameterName);
