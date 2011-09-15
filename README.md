@@ -4,6 +4,16 @@ A Java web framework built on top of the standard Servlet API.
 ## Getting Started
 It's very simple to get started using Rift. All in all you need to add a few lines to your web.xml file, include the rift jars on your classpath and off you go.
 
+### Maven Repository
+In case you want to use Rift in your Maven build, here's a repository for you.
+
+	<repositories>
+		<repository>
+			<id>wireweb-public-repo</id>
+			<url>http://opensource.wireweb.co.uk/maven2</url>
+		</repository>
+	</repositories>
+
 ### web.xml
 Start by adding the Rift servlet context listener.
 
