@@ -8,7 +8,7 @@ It's very simple to get started using Rift. All in all you need to add a few lin
 Start by adding the Rift servlet context listener.
 
 	<listener>
-		<listener-class>uk.co.wireweb.rift.core.RiftServletContextListener</listener-class
+		<listener-class>uk.co.wireweb.rift.core.RiftServletContextListener</listener-class>
 	</listener>
 
 After this we'll need the Rift filter which is the entry point for all things Rift.
