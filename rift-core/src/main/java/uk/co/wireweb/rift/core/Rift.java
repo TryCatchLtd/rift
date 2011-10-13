@@ -18,12 +18,11 @@ import org.slf4j.LoggerFactory;
 
 import uk.co.wireweb.rift.core.internal.AnnotationScanner;
 import uk.co.wireweb.rift.core.internal.Configuration;
+import uk.co.wireweb.rift.core.internal.RequestUtility;
 import uk.co.wireweb.rift.core.spi.InterceptHandler;
 import uk.co.wireweb.rift.core.spi.RequestContext;
 import uk.co.wireweb.rift.core.spi.RequestHandler;
 import uk.co.wireweb.rift.core.spi.WebpageContext;
-import uk.co.wireweb.rift.core.spi.annotation.Get;
-import uk.co.wireweb.rift.core.spi.annotation.Post;
 
 /**
  * @author Daniel Johansson
@@ -70,14 +69,7 @@ public class Rift implements Filter {
                     try {
                         request.setAttribute("exception", throwable);
                         final Class<?> riftDebugClass = Class.forName(RIFT_DEBUG_CLASS);
-                        Class<? extends Annotation> annotationClass = Get.class;
-
-                        if ("GET".equalsIgnoreCase(request.getMethod())) {
-                            annotationClass = Get.class;
-                        } else if ("POST".equalsIgnoreCase(request.getMethod())) {
-                            annotationClass = Post.class;
-                        }
-
+                        final Class<? extends Annotation> annotationClass = RequestUtility.getRequestMethodAnnotation(request);
                         final Method method = new AnnotationScanner().findMethodsOnClass(riftDebugClass).annotatedWith(annotationClass).asSingleResult();
 
                         if (method != null) {

@@ -51,6 +51,10 @@ public class RequestContext {
         return this.servletContext;
     }
 
+    /**
+     * Returns the instance of the provided {@link WebApplication}, this can be null if no {@link WebApplication} was detected.
+     * @return the {@link WebApplication} or null.
+     */
     public WebApplication getWebApplication() {
         return this.webApplication;
     }

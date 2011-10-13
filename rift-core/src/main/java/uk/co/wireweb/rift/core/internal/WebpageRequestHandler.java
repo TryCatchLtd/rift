@@ -23,9 +23,7 @@ import uk.co.wireweb.rift.core.spi.Identity;
 import uk.co.wireweb.rift.core.spi.RequestContext;
 import uk.co.wireweb.rift.core.spi.RequestHandler;
 import uk.co.wireweb.rift.core.spi.WebpageContext;
-import uk.co.wireweb.rift.core.spi.annotation.Get;
 import uk.co.wireweb.rift.core.spi.annotation.Parameter;
-import uk.co.wireweb.rift.core.spi.annotation.Post;
 import uk.co.wireweb.rift.core.spi.annotation.SecurePage;
 import uk.co.wireweb.rift.core.spi.view.RedirectView;
 import uk.co.wireweb.rift.core.spi.view.View;
@@ -61,14 +59,7 @@ public class WebpageRequestHandler implements RequestHandler {
                 final SecurePage securePage = pageClass.getAnnotation(SecurePage.class);
 
                 if ((securePage == null) || (this.identityIsLoggedInAndHasRequiredRoles(securePage, identity))) {
-                    Class<? extends Annotation> annotationClass = Get.class;
-
-                    if ("GET".equalsIgnoreCase(request.getMethod())) {
-                        annotationClass = Get.class;
-                    } else if ("POST".equalsIgnoreCase(request.getMethod())) {
-                        annotationClass = Post.class;
-                    }
-
+                    final Class<? extends Annotation> annotationClass = RequestUtility.getRequestMethodAnnotation(request);
                     final Method method = new AnnotationScanner().findMethodsOnClass(pageClass).annotatedWith(annotationClass).asSingleResult();
 
                     if (method != null) {

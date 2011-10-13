@@ -37,7 +37,13 @@ public final class Configuration {
         this.interceptHandlers = pluginContext.getInterceptHandlers();
         this.requestHandlers = pluginContext.getRequestHandlers();
         this.instantiator = pluginContext.getInstantiator();
-        this.webApplication = this.instantiator.getInstance(pluginContext.getWebApplicationClass());
+
+        if (pluginContext.getWebApplicationClass() != null) {
+            this.webApplication = this.instantiator.getInstance(pluginContext.getWebApplicationClass());
+        } else {
+            this.webApplication = null;
+        }
+
         this.servletContext = pluginContext.getServletContext();
         this.properties = pluginContext.getProperties();
     }

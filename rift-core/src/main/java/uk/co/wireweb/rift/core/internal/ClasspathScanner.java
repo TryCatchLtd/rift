@@ -77,20 +77,22 @@ public class ClasspathScanner {
             classpaths.add(this.servletContext.getRealPath("/WEB-INF/lib"));
 
             for (final String path : classpaths) {
-                LOGGER.trace("[Rift] Searching through classpath [{}]", path);
+                if (path != null) {
+                    LOGGER.trace("[Rift] Searching through classpath [{}]", path);
 
-                if (!this.parsedPath.contains(path)) {
-                    final File file = new File(path);
+                    if (!this.parsedPath.contains(path)) {
+                        final File file = new File(path);
 
-                    if (file.isDirectory()) {
-                        this.classnamesOnClasspath.addAll(this.getClasses(file, file));
-                    } else {
-                        if (file.getAbsolutePath().toLowerCase().endsWith(".jar")) {
-                            this.classnamesOnClasspath.addAll(this.parseJarFile(file));
+                        if (file.isDirectory()) {
+                            this.classnamesOnClasspath.addAll(this.getClasses(file, file));
+                        } else {
+                            if (file.getAbsolutePath().toLowerCase().endsWith(".jar")) {
+                                this.classnamesOnClasspath.addAll(this.parseJarFile(file));
+                            }
                         }
-                    }
 
-                    this.parsedPath.add(path);
+                        this.parsedPath.add(path);
+                    }
                 }
             }
         }

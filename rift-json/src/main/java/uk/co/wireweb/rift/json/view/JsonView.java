@@ -6,9 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
-
 import uk.co.wireweb.rift.core.spi.view.View;
+
+import com.google.gson.JsonObject;
 
 /**
  * @author Daniel Johansson
@@ -17,17 +17,17 @@ import uk.co.wireweb.rift.core.spi.view.View;
  */
 public class JsonView implements View {
 
-    private final JSONObject jsonObject;
+    private final JsonObject jsonObject;
 
-    public JsonView(final JSONObject jsonObject) {
+    public JsonView(final JsonObject jsonObject) {
         this.jsonObject = jsonObject;
     }
 
     @Override
     public void execute(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
-        response.setContentLength(this.jsonObject.toJSONString().length());
-        response.getWriter().write(this.jsonObject.toJSONString());
+        response.setContentLength(this.jsonObject.getAsString().length());
+        response.getWriter().write(this.jsonObject.getAsString());
         response.getWriter().flush();
     }
 }
