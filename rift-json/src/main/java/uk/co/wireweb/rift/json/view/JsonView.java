@@ -26,8 +26,8 @@ public class JsonView implements View {
     @Override
     public void execute(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
-        response.setContentLength(this.jsonObject.getAsString().length());
-        response.getWriter().write(this.jsonObject.getAsString());
+        response.setContentLength(this.jsonObject.toString().length());
+        response.getWriter().write(this.jsonObject.toString());
         response.getWriter().flush();
     }
 }
