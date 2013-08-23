@@ -1,6 +1,7 @@
 package uk.co.wireweb.rift.core.spi.view;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +19,12 @@ public class ByteArrayView implements View {
     private final String contentType;
 
     public ByteArrayView(final String contentType, final byte[] byteArray) {
-        if (this.byteArray == null) {
+        if (byteArray == null) {
             throw new IllegalArgumentException("byte array cannot be null");
         }
 
         this.contentType = contentType;
-        this.byteArray = byteArray;
+        this.byteArray = Arrays.copyOf(byteArray, byteArray.length);
     }
 
     @Override

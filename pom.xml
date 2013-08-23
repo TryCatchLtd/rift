@@ -5,7 +5,7 @@
     <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>uk.co.wireweb.rift</name>
-    <url>http://www.wireweb.co.uk/</url>
+    <url>https://github.com/TryCatchLtd/rift</url>
 
     <licenses>
         <license>
@@ -18,8 +18,8 @@
         <developer>
             <id>daniel</id>
             <name>Daniel Johansson</name>
-            <organization>Wireweb</organization>
-            <organizationUrl>http://www.wireweb.co.uk/</organizationUrl>
+            <organization>Try Catch Limited</organization>
+            <organizationUrl>http://www.trycatch.net/</organizationUrl>
             <timezone>0</timezone>
             <roles>
                 <role>Developer</role>
@@ -40,6 +40,20 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.0.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.5</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
             <scope>test</scope>
         </dependency>
 

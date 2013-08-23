@@ -1,39 +1,28 @@
 package uk.co.wireweb.rift.core.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import javax.servlet.ServletContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import uk.co.wireweb.rift.core.spi.Plugin;
 import uk.co.wireweb.rift.core.spi.PluginContext;
 
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 /**
  * @author Daniel Johansson
- *
  * @since 12 Jun 2011
  */
 public class ClasspathScanner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClasspathScanner.class);
-
     private final List<ClassHandler> classHandlers = new ArrayList<ClassHandler>();
-
     private final List<String> parsedPath = new ArrayList<String>();
-
     private final Set<String> classnamesOnClasspath = new HashSet<String>();
-
     private final ServletContext servletContext;
 
     public ClasspathScanner(final ServletContext servletContext) {
@@ -56,7 +45,7 @@ public class ClasspathScanner {
                 try {
                     final Class<?> clazz = Class.forName(className, false, this.getClass().getClassLoader());
                     classHandler.handle(pluginContext, clazz);
-                } catch (Throwable exception) {
+                } catch (Throwable ignored) {
 
                 }
             }
@@ -69,7 +58,7 @@ public class ClasspathScanner {
 
             try {
                 classpaths.add(this.servletContext.getResource("/").getPath());
-            } catch (MalformedURLException exception) {
+            } catch (MalformedURLException ignored) {
 
             }
 
@@ -111,7 +100,7 @@ public class ClasspathScanner {
                 if (Plugin.class.isAssignableFrom(clazz) && !clazz.isInterface()) {
                     plugins.add((Class<Plugin>) clazz);
                 }
-            } catch (Throwable exception) {
+            } catch (Throwable ignored) {
 
             }
         }
@@ -121,19 +110,21 @@ public class ClasspathScanner {
 
     private List<String> getClasses(final File rootDirectory, final File directory) {
         final List<String> classNames = new ArrayList<String>();
-        final File list[] = directory.listFiles();
+        final File[] list = directory.listFiles();
         final String rootDirectoryPath = rootDirectory.getAbsolutePath();
 
-        for (final File file : list) {
-            if (file.isDirectory()) {
-                classNames.addAll(this.getClasses(rootDirectory, file));
-            } else if (file.getAbsolutePath().toLowerCase().endsWith(".java") || file.getAbsolutePath().toLowerCase().endsWith(".class")) {
-                final String filePath = file.getAbsolutePath();
-                final String className = filePath.substring(rootDirectoryPath.length());
+        if (list != null) {
+            for (final File file : list) {
+                if (file.isDirectory()) {
+                    classNames.addAll(this.getClasses(rootDirectory, file));
+                } else if (file.getAbsolutePath().toLowerCase().endsWith(".java") || file.getAbsolutePath().toLowerCase().endsWith(".class")) {
+                    final String filePath = file.getAbsolutePath();
+                    final String className = filePath.substring(rootDirectoryPath.length());
 
-                classNames.add(this.toFullyQualifiedPackageAndClass(className));
-            } else if (file.getAbsolutePath().toLowerCase().endsWith(".jar")) {
-                classNames.addAll(this.parseJarFile(file));
+                    classNames.add(this.toFullyQualifiedPackageAndClass(className));
+                } else if (file.getAbsolutePath().toLowerCase().endsWith(".jar")) {
+                    classNames.addAll(this.parseJarFile(file));
+                }
             }
         }
 
@@ -145,26 +136,23 @@ public class ClasspathScanner {
 
         final List<String> classNames = new ArrayList<String>();
 
-        if (!this.parsedPath.contains(file.getAbsolutePath()) && (file != null)) {
+        if (!this.parsedPath.contains(file.getAbsolutePath())) {
             try {
                 final JarFile jarFile = new JarFile(file);
+                final Enumeration<JarEntry> enumeration = jarFile.entries();
 
-                if (jarFile != null) {
-                    final Enumeration<JarEntry> enumeration = jarFile.entries();
+                while (enumeration.hasMoreElements()) {
+                    final JarEntry entry = enumeration.nextElement();
 
-                    while (enumeration.hasMoreElements()) {
-                        final JarEntry entry = enumeration.nextElement();
-
-                        if (!entry.isDirectory() && (entry.getName().endsWith(".class") || entry.getName().endsWith(".java"))) {
-                            final String className = this.toFullyQualifiedPackageAndClass(entry.getName());
-                            classNames.add(className);
-                        }
+                    if (!entry.isDirectory() && (entry.getName().endsWith(".class") || entry.getName().endsWith(".java"))) {
+                        final String className = this.toFullyQualifiedPackageAndClass(entry.getName());
+                        classNames.add(className);
                     }
-
-                    this.parsedPath.add(file.getAbsolutePath());
                 }
+
+                this.parsedPath.add(file.getAbsolutePath());
             } catch (IOException exception) {
-                exception.printStackTrace();
+                LOGGER.warn("[Rift] Could not parse jar file [{}]", file.getAbsolutePath());
             }
         }
 
